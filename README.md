@@ -10,4 +10,5 @@
    and end (-e or --end)flags. Examples below:
    
    $ python3 ./random_print.py -s -5 -e 2
+or
    $ python3 ./random_print.py --start 1023 --end 1027
