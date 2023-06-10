@@ -1,0 +1,51 @@
+##########################################
+What to Measure ?
+##########################################
+
+1- CPU LOAD: As SSL dycryption is a CPU intensive workload in general. We need to ensure that the cpu is not getting overloaded by the huge number of requests it has to handle.
+2- RAM Utilization: Ensure that the RAM is not fully utilized as it can degrade performance.
+3- Disk Utilizaion: Ensure that there is enough space available to store logs, SSL certificates and any other data genetated by the server.
+4- Network Throughput: Ensure that the 10 Gigabit ethernet links are not getting overloaded. This can result in packet loss and affect system performance where clients requests are not processed in a timely manner.
+5- Response Time: Measure the average time taken by the server to process requests and respond.
+6- Request Throughput: Measure the number of requests processed by the server per second and analyze if the system is perfroming up to the required capacity.
+7- SSL Handshakes per second: To Accurately determine the servers offload capability
+
+##########################################
+How to Measure ?
+##########################################
+
+CPU, Memory and Storage:
+
+The easiest and most simplest way is to use linux commands. 
+The htop/top command displays realtime CPU utilization by the applications running on the Linux systems. 
+To measure memory available vs utilized, 'cat /proc/meminfo' can be used.
+Disk utilization can simply be checked by '$ df -hT' in Linux systems.
+
+The proper and long term solution would be to use logging and monitoring solutions. For example prometheus agent can be used on the server to push CPU, Memory and Storage metrics to prometheus server and Grafana can be used to display logging data in structured and pretty graphs.
+
+Network Throughput:
+Network throughput can simply be measured by 'iperf' tool in linux.
+Prometheus snmp_exporter can be used to measure network performance and forward to prometheus server. Grafana can be used for visulaization.
+Zabbix and Nagios can also be used to measure various network parameters and health of servers.
+
+SSL Handshakes:
+tls-perf is and open source tool that can be used to stress test the TLS handshake on the server.
+https://github.com/tempesta-tech/tls-perf
+ELK stack can also be used to analyze logs and determine handshake/request rate.
+
+Response Time:
+tlsping is an opensource tool that can be used to measure handshake latency:
+https://github.com/airnandez/tlsping
+ELK stack can also be used to analyze logs and determine handshake/request rate.
+
+##########################################
+What are the Challenges ?
+##########################################
+
+A single unified montioring solution for all these parameters might not be possible. Setting up the monitoring solutions and integration with the offload server can be challenging and can incurr additional infrastructure costs as these services will reside on machines external to the offload server.
+
+25000 requests per second means that a huge amount of logging data will need to be scrapped and stored in realtime. The network performance might be affected due to realtime data collection and increased throughput from the logging tools. This can be crucial as the system is already dealing with high traffic.
+
+A proper log retention policy needs to be implemented as the disk space on the monitioring infrastructure can fill up pretty quickly.
+
+Monitoring agents/solutions on the offload server will cause an increase in usage of system resources and can degrade system performance further if the server is already on the edge of its full capacity.
